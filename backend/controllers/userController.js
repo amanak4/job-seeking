@@ -7,13 +7,19 @@ import bcrypt from "bcrypt";
 export const register =catchAsyncError(async (req,res,next)=>{
     const {name,email,phone,role,password}=req.body;
     if(!name||!email||!phone||!role||!password){
-        return next(new ErrHandler("Please fill full registration form!",400));
+        return res.json({
+            success:false,
+            error:"Please fill full registration form!"
+        });
     }
 
     User.findOne({ email })
     .then(user => {
         if (user) {
-            return next(new ErrHandler("Email already exists"));
+            return res.json({
+                success:false,
+                error:"Email Already Exists!"
+            })
         } 
     });
     const user =await User.create({
@@ -31,20 +37,29 @@ export const register =catchAsyncError(async (req,res,next)=>{
 export const login = catchAsyncError(async (req,res,next)=>{
     const {email,password,role}=req.body;
     if(!email||!role||!password){
-        return next(new ErrHandler("Please fill full login form!"));
-    }
+        return res.json({
+            success:false,
+            error:"Please fill full registration form!"
+        });
+     }
 
     const user =await User.findOne({email});
     if(user.role!==role){
-        return next(new ErrHandler("user with this role not found!"));
+        return res.json({
+            success:false,
+            error:"user with this role not found!"});
     }
     if(!user){
-        return next(new ErrHandler("Invalid email or password!",400));
+        return res.json({
+            success:false,
+            error:"Invalid email or password!"});
     }
 
     const ispassord_correct =await user.comparePassword(String(password));
         if (!ispassord_correct) {
-            return next(new ErrHandler("Invalid email or password!",400));
+            return res.json({
+                success:false,
+                error:"Invalid email or password!"})
         }
    
     sendToken(user,200,res,"User login successfully!");
