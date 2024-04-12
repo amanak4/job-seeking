@@ -11,40 +11,71 @@ export const getalljobs =catchAsyncError(async(req,res,next)=>{
 });
 
 export const  postjob=catchAsyncError(async(req,res,next)=>{
+    try{
     const {role}=req.user;
     if(role==="Job Seeker"){
-        return next (new ErrHandler("Munna your role is to see the jobs not to create the jobs!"),400);
+        res.json({
+            success:false,
+            error:"Munna, your role is to view jobs, not to post them!",
+        })
     }
 
-    const {title,description,category,country,city,location,fixedSalary,salaryfrom,salaryto,expried,jobPostedOn}=req.body;
+    const {title,description,category,country,city,location,fixedSalary,salaryFrom,salaryTo,expried,jobPostedOn}=req.body;
 
     if(!title||!description||!category||!country||!city||!location){
-        return  next (new ErrHandler("Munna please complete the form"),400);
+       res.json({
+        success:false,
+        error:"Fill all required fields",
+       })    
     }
 
-    if((!salaryfrom||!salaryto)&&!fixedSalary){
-        return next (new ErrHandler("You left to fill range salary or fixed salary"),400);
+    if((!salaryFrom||!salaryTo)&&!fixedSalary){
+       res.json({
+        success:false,
+        error:"Can't post without salary",
+       })    
     }
 
-    if(salaryfrom&&salaryto&&fixedSalary){
-        return next (new ErrHandler("You can't fill both range salary and fixed salary"),400);
+    if(salaryFrom&&salaryTo&&fixedSalary){
+        res.json({
+            success:false,
+            error:"Can't post with both salary and fixed salary",
+        })    
     }
 
     const postedBy=req.user._id;
 
-   const job= await Job.create({title,description,category,country,city,location,fixedSalary,salaryfrom,salaryto,expried,jobPostedOn,postedBy});
+   const job= await Job.create({title,description,category,country,city,location,fixedSalary,salaryFrom,salaryTo,expried,jobPostedOn,postedBy});
 
    res.status(200).json({
     success:true,
     message:"job posted",
     job
    });
+}
+catch(error){
+    let errorResponse = {};
+
+    if (error.errors) {
+        Object.keys(error.errors).forEach(field => {
+            errorResponse[field] = error.errors[field].message;
+        });
+    } else {
+        errorResponse['message'] = error.message;
+    }
+
+    // Send the error response to the client
+    res.status(400).json({ mongooseError:  errorResponse });
+}
 });
 
 export const getmyjob=catchAsyncError(async(req,res,next)=>{
     const {role}=req.user;
     if(role==="Job Seeker"){
-        return  next (new ErrHandler("Munna your role is to see the jobs not to see which job you created the jobs!"),400);
+       res.json({
+           success:false,
+           error:"Munna, your role is to view jobs, not to post them!",
+       })   
     }
 
     

@@ -5,6 +5,7 @@ import { sendToken } from "../utils/jwtToken.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 export const register =catchAsyncError(async (req,res,next)=>{
+    try{
     const {name,email,phone,role,password}=req.body;
     if(!name||!email||!phone||!role||!password){
         return res.json({
@@ -32,11 +33,29 @@ export const register =catchAsyncError(async (req,res,next)=>{
     //     message:"user registered!",
     //     user,
     // });
+}
+
+catch(error){
+    let errorResponse = {};
+
+        if (error.errors) {
+            Object.keys(error.errors).forEach(field => {
+                errorResponse[field] = error.errors[field].message;
+            });
+        } else {
+            errorResponse['message'] = error.message;
+        }
+
+        // Send the error response to the client
+        res.status(400).json({ mongooseError:  errorResponse });
+}
 });
 
 export const login = catchAsyncError(async (req,res,next)=>{
+    console.log("sdf");
     const {email,password,role}=req.body;
-    if(!email||!role||!password){
+  console.log(email,password);
+    if(!email||!password||!role){
         return res.json({
             success:false,
             error:"Please fill full registration form!"
@@ -44,17 +63,18 @@ export const login = catchAsyncError(async (req,res,next)=>{
      }
 
     const user =await User.findOne({email});
-    if(user.role!==role){
-        return res.json({
-            success:false,
-            error:"user with this role not found!"});
-    }
     if(!user){
         return res.json({
             success:false,
             error:"Invalid email or password!"});
     }
 
+    if(role!==user.role){
+        return res.json({
+            success:false,
+            error:"user with this role not found!"});
+    }
+   
     const ispassord_correct =await user.comparePassword(String(password));
         if (!ispassord_correct) {
             return res.json({

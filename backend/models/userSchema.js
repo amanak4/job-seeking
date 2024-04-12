@@ -44,10 +44,10 @@ userSchema.pre("save",async function(next){
 });
 
 
-
 userSchema.methods.getJWTToken = function() {
     const expiresIn = Math.floor(Date.now() / 1000) + (process.env.JWT_EXPIRES * 3600);
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, { expiresIn });
 };
 
-export const User = mongoose.model("User",userSchema);
+ const User = mongoose.model("User",userSchema);
+export {User};
