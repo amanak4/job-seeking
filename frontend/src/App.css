@@ -1,0 +1,64 @@
+.heroSection {
+  background-color: #f4f4f4;
+  padding: 50px 0;
+}
+
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.title h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.title p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.image img {
+  max-width: 50%;
+  height: auto;
+  position: absolute;
+  display: none;
+}
+
+.details {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 0 10px;
+  max-width: 250px;
+}
+
+.card .icon {
+  font-size: 2rem;
+  color: #007bff;
+  margin-bottom: 15px;
+}
+
+.card .content {
+  text-align: center;
+}
+
+.card p {
+  margin: 0;
+  font-size: 1.2rem;
+}
