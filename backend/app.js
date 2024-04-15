@@ -14,7 +14,7 @@ dotenv.config({path:"./config/config.env"});
 
 app.use(
     cors({
-        origin:"http://localhost:3000",
+        origin:"https://job-seeking-three.vercel.app",
         methods:["GET","POST","DELETE","PUT"],
         credentials:true,
     })
@@ -33,10 +33,8 @@ fileUpload({
 
     app.use("/user",userrouter);
     app.use("/job",jobrouter);
-    app.use("/applications",applicationrouter)
+    app.use("/applications",applicationrouter);
 
-
-    
     dbConnect();
 
     app.use(ErrHandler);
