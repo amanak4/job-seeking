@@ -1,0 +1,27 @@
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ccc;
+    max-width: 100%;
+    /* margin: 0 auto; */
+  }
+  .navbarHide{
+    display: none;
+  }
+  
+  .navbarShow{
+    border-bottom: #ccc 1px solid;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    /* margin-bottom: 20px; */
+  }
+
+  .active{
+     text-decoration: underline;
+     font-weight: 800 !important;
+  }
+  

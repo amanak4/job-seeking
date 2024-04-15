@@ -63,6 +63,7 @@ await application.deleteOne();
   });
 
   export const postApplication = catchAsyncError(async(req,res,next)=>{
+    try{
     const {role}=req.user;
 
     if(role==="Employer"){
@@ -126,4 +127,19 @@ if(!allowFormat.includes(resume.mimetype)){
     message:"Applied Successfully",
     application
  })
-  });
+  }
+  catch(error){
+    let errorResponse = {};
+
+    if (error.errors) {
+        Object.keys(error.errors).forEach(field => {
+            errorResponse[field] = error.errors[field].message;
+        });
+    } else {
+        errorResponse['message'] = error.message;
+    }
+
+    // Send the error response to the client
+    res.status(400).json({ mongooseError:  errorResponse });
+  }
+});

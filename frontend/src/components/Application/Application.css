@@ -1,0 +1,45 @@
+.application-container {
+    max-width: 500px;
+    margin-top: 70px;
+  }
+  
+  .application-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .application-form div {
+    margin-bottom: 10px;
+  }
+  
+  .application-form label {
+    font-weight: bold;
+  }
+  
+  .application-form input[type="text"],
+  .application-form input[type="email"],
+  .application-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .application-form textarea {
+    resize: vertical;
+  }
+  
+  .application-form button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .application-form button:hover {
+    background-color: #0056b3;
+  }
+  
