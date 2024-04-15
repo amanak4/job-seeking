@@ -4,6 +4,7 @@ import { Context } from '../../index';
 import './MyJob.css';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../header';
+import toast from 'react-hot-toast';
 function MyJobs() {
   const { isAuthorized, setIsAuthorized, user } = useContext(Context);
   const [data, setData] = useState([]);
