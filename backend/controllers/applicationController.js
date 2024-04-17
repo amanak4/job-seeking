@@ -8,7 +8,10 @@ export const employerGetAllApplication=catchAsyncError(async(req,res,next)=>{
   const {role}=req.user;
 
   if(role==="Job Seeker"){
-    return next(new ErrHandler("munna, you are not a employer to see that"),404);
+    res.status(404).json({
+          success:false,
+          error:"munna, you are not a employer to see that"
+    });
   }
 
   const {_id}=req.user;
@@ -18,7 +21,7 @@ export const employerGetAllApplication=catchAsyncError(async(req,res,next)=>{
 res.json({
     success:true,
     "message":"ALL Application",
-    allApplication
+    "allApplication":allApplication
 })
 });
 
@@ -26,7 +29,10 @@ export const JobSeekerGetAllApplication=catchAsyncError(async(req,res,next)=>{
     const {role}=req.user;
   
     if(role==="Employer"){
-      return next(new ErrHandler("Munna,you are not a Job Seeker to access that!"),404);
+      res.status(404).json({
+        success:false,
+        error:"Munna,you are not a Job Seeker to access that!"
+  });
     }
   
     const {_id}=req.user;
@@ -67,25 +73,44 @@ await application.deleteOne();
     const {role}=req.user;
 
     if(role==="Employer"){
-        return next(new ErrHandler("Munna,you are not a Job Seeker to   apply in that!"),404);
+
+      res.json({
+        success:false,
+        error:"Munna,you are not a Job Seeker to   apply in that!"
+  });
+        // return next(new ErrHandler(),404);
       }
    
 if(!(req.files)||Object.keys(req.files).length===0){
-    return next(new ErrHandler("Resume File Required"));
+  res.json({
+    success:false,
+    error:"Resume File Required"
+});
+    // return next(new ErrHandler());
 }
         const {resume}=req.files;
 const allowFormat=["image/png","image/jpeg","image/webp"];
 
 if(!allowFormat.includes(resume.mimetype)){
-    return next(new ErrHandler("Invalid file type.Please upload your resume in png,jpg or webp",404));
+  res.json({
+    success:false,
+    error:"Invalid file type.Please upload your resume in png,jpg or webp"
+});
+    // return next(new ErrHandler(,404));
 }
 
  const cloudinaryResponse =await cloudinary.uploader.upload(resume.tempFilePath);
 
  if(!cloudinaryResponse||cloudinaryResponse.error){
     console.error("cloudinary error:",cloudinaryResponse.error||"unknown error");
-    return next(new ErrHandler("Failed to upload resume.",500));
+    if(!allowFormat.includes(resume.mimetype)){
+      res.json({
+        success:false,
+        error:"Failed to upload resume."
+    });
+    // return next(new ErrHandler(,500));
  }
+}
 
  const {name,email,coverletter,phone,jobId} = req.body;
 
@@ -95,14 +120,22 @@ if(!allowFormat.includes(resume.mimetype)){
  }
 
  if(!jobId){
-    return next(new ErrHandler("Job Not Found!",404));
+  res.json({
+    success:false,
+    error:"Job Not Found!"
+});
+    // return next(new ErrHandler,404));
  }
  const jobdetails=await Job.findById(jobId);
 
 
 
  if(!jobdetails){
-    return next(new ErrHandler("Job not found!",404));
+  res.json({
+    success:false,
+    error:"Job Not Found!"
+})
+    // return next(new ErrHandler("Job not found!",404));
  }
 
  const employerID={
@@ -112,7 +145,11 @@ if(!allowFormat.includes(resume.mimetype)){
 
  console.log(employerID);
  if(!name || !email || !coverletter ||!phone || !applicantID || !employerID){
-    return next (new ErrHandler("Please fill all field!",404))
+  res.json({
+    success:false,
+    error:"Please fill all field!"
+})
+    // return next (new ErrHandler(,404))
  }
 
  const application=await Application.create({
@@ -132,14 +169,12 @@ if(!allowFormat.includes(resume.mimetype)){
     let errorResponse = {};
 
     if (error.errors) {
-        Object.keys(error.errors).forEach(field => {
-            errorResponse[field] = error.errors[field].message;
-        });
+        const firstKey = Object.keys(error.errors)[0]; 
+        errorResponse[firstKey] = error.errors[firstKey].message; 
     } else {
         errorResponse['message'] = error.message;
     }
-
-    // Send the error response to the client
-    res.status(400).json({ mongooseError:  errorResponse });
+    const errorString = JSON.stringify(errorResponse);
+    res.status(400).json({ mongooseError:  errorString });
   }
 });

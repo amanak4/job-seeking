@@ -11,7 +11,8 @@
     margin-left: auto; /* Equivalent to mx-auto */
     margin-right: auto; /* Equivalent to mx-auto */
     padding-left: 1rem; /* Equivalent to px-4 */
-    padding-right: 1rem; /* Equivalent to px-4 */
+    padding-right: 1rem; 
+    margin-top: 100px;/* Equivalent to px-4 */
   }
 
   .job-card div {

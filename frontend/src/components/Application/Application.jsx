@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
-import './Application.css'; 
+
 import { Context } from '../../index';
 import { BASE_URL } from '../../header';
 
@@ -32,25 +32,31 @@ function Application() {
     formData.append("jobId", id);
     
     try {
-      const response = await axios.post(`${BASE_URL}/applications/post`, formData, {
+      const {data} = await axios.post(`${BASE_URL}/applications/post`, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data"
         },
       });
-
-      setLoading(false); // Clear loading state after receiving the response
-
-      if (response.data === null) {
+console.log("daadada",data);
+      setLoading(false);
+      if (data === null) {
         return <div>Loading.....</div>;
       }
       
-      toast.success(response.data.message);
-      navigateTo("/job/getall");
+      if(data.message){
+        toast.success(data.message);
+        navigateTo("/applications/me");
+       }
+       else if(data.error){
+         toast.error(data.error);
+       }
+      // toast.success(response.data.message);
+     
     } catch (error) {
-      setLoading(false); // Clear loading state in case of an error
-
-      toast.error(error.response);
+      setLoading(false); 
+      toast.error(error.response.data.mongooseError);
+   
     }
   }
 
@@ -65,32 +71,34 @@ function Application() {
     <div className="grid items-center justify-items-center gap-x-4 gap-y-10 lg:grid-cols-2">
       <div className="flex items-center justify-center">
               <div className="px-2 md:px-12">
-                <p className="text-2xl font-bold text-gray-900 md:text-4xl">Apply for the Job</p>
+                {/* <p >Apply for the Job</p> */}
+                <h3 className="text-2xl font-bold text-gray-900 md:text-4xl mb-4">Application Form</h3>
       <form className="application-form" onSubmit={(e) => {
         e.preventDefault();
         postApp();
       }}>
         <div className="grid w-full  items-center gap-1.5">
-          <label className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Name:</label>
-          <input   className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <label for="name" className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Name:</label>
+          <input id='name'  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-black-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" placeholder='Name' type="text" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="grid w-full  items-center gap-1.5">
-          <label className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email:</label>
-          <input className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <label for="email" className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email:</label>
+          <input id='email' className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-black-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" placeholder='example@gmail.com' type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className="grid w-full  items-center gap-1.5">
-          <label className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cover Letter:</label>
-          <textarea className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" value={coverletter} onChange={(e) => setcoverletter(e.target.value)}></textarea>
+          <label for="coverletter" className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cover Letter:</label>
+          <textarea id='coverletter' className= "flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" placeholder='Cover Letter' value={coverletter} onChange={(e) => setcoverletter(e.target.value)}></textarea>
+
         </div>
         <div className="grid w-full  items-center gap-1.5">
-          <label className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Phone:</label>
-          <input   className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <label for="Phone" className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Phone:</label>
+          <input  id="Phone"  className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-black-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" placeholder='1234567890' type="text" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </div>
         <div className="grid w-full  items-center gap-1.5">
-          <label className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Resume:</label>
-          <input   className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" type="file" accept=".png,.jpg,.webp" onChange={handleResumeChange} />
+          <label for='resume' className="text-sm font-medium leading-none text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Resume:</label>
+          <input  id='resume' className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-black-50 dark:focus:ring-gray-400 dark:focus:ring-offset-gray-900" type="file" accept=".png,.jpg,.webp" onChange={handleResumeChange} />
         </div>
-        <button type="submit">{loading ? 'Submitting...' : 'Submit Application'}</button>
+      <button type="submit" className='submitApp' >{loading ? 'Submitting...' : 'Submit Application'}</button>
       </form>
       
       </div>

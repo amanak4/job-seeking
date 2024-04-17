@@ -14,7 +14,7 @@ dotenv.config({path:"./config/config.env"});
 
 app.use(
     cors({
-        origin:"https://job-seeking-three.vercel.app",
+        origin:["https://job-seeking-three.vercel.app","http://localhost:3000"],
         methods:["GET","POST","DELETE","PUT"],
         credentials:true,
     })

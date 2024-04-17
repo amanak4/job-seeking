@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config({path:"./config/config.env"});
 
 export const dbConnect =()=>{
-    mongoose.connect('mongodb+srv://22je0094:6fUKORytz4DEB9cr@cluster0.rz6z7c1.mongodb.net/Job_Seeking?retryWrites=true&w=majority&appName=Cluster0').then(()=>{
+    mongoose.connect(process.env.MONGO_URL).then(()=>{
         console.log("db Connected");
     })
     .catch((err)=>{

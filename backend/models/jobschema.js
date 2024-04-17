@@ -34,12 +34,12 @@ const jobSchema = mongoose.Schema({
         minLength:[4,"Fixed salary must contain atleast 4 digits!"],
         maxLength:[9,"Fixed salary can't exceed 9 digits!"]
     },
-    salaryfrom:{
+    salaryFrom:{
         type:Number,
         minLength:[4,"Salary from must contain atleast 4 digits!"],
         maxLength:[9,"Salary from can't exceed 9 digits!"]
     },
-    salaryto:{
+    salaryTo:{
         type:Number,
         minLength:[4,"Salary to must contain atleast 4 digits!"],
         maxLength:[9,"Salary to can't exceed 9 digits!"]

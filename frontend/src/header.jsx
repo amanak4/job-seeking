@@ -1,1 +1,1 @@
-export const BASE_URL="https://job-seeking-zpzw.onrender.com";
+export const BASE_URL="http://localhost:4000";
