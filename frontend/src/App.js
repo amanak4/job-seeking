@@ -1,6 +1,6 @@
-import React ,{useEffect,useContext} from 'react';
+import React ,{useEffect,useContext, useState} from 'react';
 import "./App.css";
-import { BrowserRouter as Router , Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router , Route, Routes, useSearchParams} from 'react-router-dom';
 import { Context } from './index.js';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -15,6 +15,7 @@ import Application from './components/Application/Application';
 import MyApplication from './components/Application/MyApplication';
 import Error from './components/NotFound/Error.jsx';
 import axios from 'axios';
+// import JobDetails from './components/Job/JobDetails.jsx';
 import toast, { Toaster } from 'react-hot-toast';
 import { BASE_URL } from './header.jsx';
 const App =()=>{
@@ -29,10 +30,9 @@ useEffect(()=>{
 
     setUser(response.data.us);
     setIsAuthorized(true);
-    toast.success("Welcome back "+response.data.us.name);
+    // toast.success("Welcome back "+response.data.us.name);
    }
    else{
-    // toast.error(response.data.message);
     setUser(null);
     setIsAuthorized(false);
    }
@@ -58,8 +58,9 @@ fetchuser();
           <Route path="/job/:id" element={<JobDetails />}/>
           <Route path="/job/post" element={<PostJob />}/>
           <Route path="/job/me" element={<MyJobs />}/>
+          <Route path="/job/:id" element={<JobDetails />}/>
           <Route path="/application/:id" element={<Application />}/>
-          <Route path="/application/me" element={<MyApplication />}/>
+          <Route path="/applications/me" element={<MyApplication />}/>
           <Route path="*" element={<Error />}/>
         </Routes>
         <Footer />

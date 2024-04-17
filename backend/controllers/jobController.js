@@ -1,4 +1,5 @@
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
+// import ErrHandler from "../middlewares/error.js";
 import ErrHandler from "../middlewares/error.js";
 import { Job } from "../models/jobschema.js";
 
@@ -57,15 +58,20 @@ catch(error){
     let errorResponse = {};
 
     if (error.errors) {
-        Object.keys(error.errors).forEach(field => {
-            errorResponse[field] = error.errors[field].message;
-        });
+        const firstKey = Object.keys(error.errors)[0]; // Get the first key
+        errorResponse[firstKey] = error.errors[firstKey].message; // Save only the message corresponding to the first key
     } else {
         errorResponse['message'] = error.message;
     }
+    
+    // Convert the errorResponse object to a string
+    const errorString = JSON.stringify(errorResponse);
+    
+    // Send the error string as the response to the client
+
 
     // Send the error response to the client
-    res.status(400).json({ mongooseError:  errorResponse });
+    res.status(400).json({ mongooseError:  errorString });
 }
 });
 
@@ -113,6 +119,7 @@ export const updateJob=catchAsyncError(async (req,res,next)=>{
 export const deletethejob=catchAsyncError(async(req,res,next)=>{
     const {role}=req.user;
     if(role==="Job Seeker"){
+        
         return next (new ErrHandler("Munna, your role is to view jobs, not to delete them!"),400);
     }
 
@@ -128,4 +135,20 @@ export const deletethejob=catchAsyncError(async(req,res,next)=>{
         job,
     });
 
-})
+});
+
+export const getSingleJob = catchAsyncError(async (req, res, next) => {
+    const { id } = req.params;
+    try {
+      const job = await Job.findById(id);
+      if (!job) {
+        return next(new ErrHandler("Job not found.", 404));
+      }
+      res.status(200).json({
+        success: true,
+        job,
+      });
+    } catch (error) {
+      return next(new ErrHandler(`Invalid ID / CastError`, 404));
+    }
+  });

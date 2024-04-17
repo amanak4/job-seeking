@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { Context } from '../../index';
 import { Link } from 'react-router-dom';
-import './Jobs.css'; // Import CSS file
 import { CardThree } from './cards';
 import { BASE_URL } from '../../header';
 function Jobs() {
@@ -25,11 +24,24 @@ function Jobs() {
 
   console.log("Data in state:", data); 
   return (
-    <div className="jobs-container"> 
-      {data.map((job, index) => (
-        <CardThree title={job.title} key={index} description={job.description} location={job.location} category={job.category} role={user.role} _id={job._id} />    
-      ))}
+    <section className="jobs page">
+    <div className="container">
+      <h1>ALL AVAILABLE JOBS</h1>
+      <div className="banner">
+        { data &&
+           data.map((element) => {
+            return (
+              <div className="card" key={element._id}>
+                <p>{element.title}</p>
+                <p>{element.category}</p>
+                <p>{element.country}</p>
+                <Link to={`/job/${element._id}`}>Job Details</Link>
+              </div>
+            );
+          })}
+      </div>
     </div>
+  </section>
   );
 }
 
